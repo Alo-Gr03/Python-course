@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Python Rápido</title>
+  <meta name="description" content="Curso interactivo de Python en español: teoría corta, código ejecutable en el navegador y retos con corrección automática.">
+  <meta name="theme-color" content="#1e5b8f">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#/" aria-label="Inicio">
+      <span class="brand-logo" aria-hidden="true">🐍</span>
+      <span class="brand-name">Python Rápido</span>
+    </a>
+    <nav class="topnav">
+      <a href="#/" data-nav="home" title="Curso"><span aria-hidden="true">📚</span><span class="lbl">Curso</span></a>
+      <a href="#/libre" data-nav="libre" title="Zona libre"><span aria-hidden="true">⌨️</span><span class="lbl">Zona libre</span></a>
+      <a href="#/chuleta" data-nav="chuleta" title="Chuleta"><span aria-hidden="true">📄</span><span class="lbl">Chuleta</span></a>
+      <button id="py-status" class="py-status" type="button" title="Estado de Python"><span class="dot"></span><span class="lbl" id="py-status-text">Python</span></button>
+      <button id="theme-btn" class="icon-btn" type="button" title="Cambiar tema" aria-label="Cambiar tema">🌓</button>
+    </nav>
+  </header>
+
+  <main id="app" tabindex="-1">
+    <div class="loading-screen">Cargando curso…</div>
+  </main>
+
+  <div id="keybar" class="keybar" hidden></div>
+  <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+
+  <noscript>Este curso necesita JavaScript activado.</noscript>
+  <script src="js/curso-datos.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

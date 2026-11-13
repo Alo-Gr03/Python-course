@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="96" fill="#1e5b8f"/>
+  <g font-family="ui-monospace, Menlo, Consolas, monospace" font-weight="700" text-anchor="middle">
+    <text x="256" y="300" font-size="210" fill="#f2c230">&gt;_</text>
+    <text x="256" y="420" font-size="74" fill="#ffffff" font-family="system-ui, sans-serif">Python</text>
+  </g>
+</svg>
