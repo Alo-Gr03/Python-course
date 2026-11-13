@@ -11,25 +11,33 @@ Curso completo de Python en español, pensado para aprender en poco tiempo **esc
 - Editor con resaltado de sintaxis, números de línea y sangría automática. En el celular aparece una barra con `( ) [ ] : " = #` y Tab.
 - **Zona libre** para experimentar y **chuleta** con buscador.
 - Progreso, XP y racha de días guardados en el dispositivo; se puede exportar e importar a otro dispositivo.
-- Funciona sin conexión después de la primera visita (service worker) y se puede instalar como app.
+- Funciona 100% sin conexión: abriendo `index.html` directamente desde la computadora, o instalada como app en el celular.
 
 ## Cómo usarlo
 
-**Opción recomendada: GitHub Pages (enlace para el celular y la computadora)**
+Todo funciona **100% sin conexión**: Python (Pyodide 0.26.4) va incluido en `vendor/pyodide/`, así que no se descarga nada de internet.
 
-1. En GitHub: *Settings → Pages → Build and deployment → Source: Deploy from a branch*.
-2. Elige la rama `main` y la carpeta `/ (root)`, y guarda.
-3. En un par de minutos estará en `https://<tu-usuario>.github.io/Python-course/`.
-4. En el celular, abre el enlace y usa *Añadir a pantalla de inicio* para tenerlo como app.
+### En la computadora, sin instalar nada
 
-**En local**
+1. En GitHub pulsa **Code → Download ZIP** (en la rama donde esté el curso) y descomprímelo.
+2. Abre `index.html` con doble clic (Chrome, Edge, Firefox o Safari).
+
+Listo: funciona sin internet. El progreso se guarda en ese navegador.
+
+### En el celular (como app)
+
+1. Publica el curso con GitHub Pages: *Settings → Pages → Source: Deploy from a branch*, elige la rama con el curso y la carpeta `/ (root)`.
+2. Abre `https://<tu-usuario>.github.io/Python-course/` **una vez con internet**. En esa visita se guarda todo el curso, Python incluido (unos 18 MB).
+3. Instálala: en Android, menú ⋮ → **Instalar app**; en iPhone, Safari → Compartir → **Añadir a pantalla de inicio**.
+
+Desde entonces se abre desde el ícono y funciona en modo avión.
+
+### Con un servidor local (opcional)
 
 ```bash
 python3 -m http.server 8000
 # abre http://localhost:8000
 ```
-
-La primera vez descarga Python (unos 12 MB desde jsDelivr); después queda en caché.
 
 ## Editar o añadir lecciones
 
@@ -51,5 +59,6 @@ js/curso-datos.js     generado a partir de contenido/
 contenido/            lecciones en markdown
 tools/runner.py       motor que ejecuta y corrige el código (navegador y build)
 tools/build.py        valida y compila el contenido
-sw.js, manifest.webmanifest, icons/   PWA
+sw.js, manifest.webmanifest, icons/   PWA (instalable y sin conexión)
+vendor/pyodide/       Python para el navegador, incluido (tools/vendor_pyodide.py lo regenera)
 ```

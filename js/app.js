@@ -2,7 +2,8 @@
 (() => {
   "use strict";
 
-  const PYODIDE_URL = "https://cdn.jsdelivr.net/npm/pyodide@0.26.4/";
+  // Pyodide va incluido en vendor/pyodide: el curso no necesita internet en ningún momento.
+  const PYODIDE_URL = new URL("vendor/pyodide/", document.baseURI).href;
   const COURSE = window.COURSE;
   const STORE_KEY = "python-rapido-v1";
   const XP_EXERCISE = 10;
@@ -333,10 +334,38 @@
       document.head.appendChild(s);
     });
   }
+  // Sirve los binarios de Pyodide desde la memoria (pyodide-data.js) en lugar de pedirlos por red.
+  // Así funciona también al abrir index.html directamente desde el disco (file://).
+  function installLocalFetch() {
+    if (window.__localFetch) return;
+    window.__localFetch = true;
+    const files = window.PYODIDE_FILES;
+    const cache = {};
+    const decode = (b64) => {
+      const bin = atob(b64);
+      const out = new Uint8Array(bin.length);
+      for (let i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i);
+      return out;
+    };
+    const original = window.fetch ? window.fetch.bind(window) : null;
+    window.fetch = (input, init) => {
+      const url = typeof input === "string" ? input : input && input.url ? input.url : String(input);
+      const name = url.split(/[?#]/)[0].split("/").pop();
+      if (files[name] && url.includes("vendor/pyodide/")) {
+        if (!cache[name]) { cache[name] = decode(files[name].b64); files[name].b64 = null; }
+        return Promise.resolve(new Response(cache[name], { status: 200, headers: { "Content-Type": files[name].type } }));
+      }
+      return original(input, init);
+    };
+  }
   function loadPython() {
     if (pyPromise) return pyPromise;
     setPyStatus("loading", "Cargando Python…");
     pyPromise = (async () => {
+      if (!window.PYODIDE_FILES) await loadScript(PYODIDE_URL + "pyodide-data.js");
+      installLocalFetch();
+      // Se carga con <script> (no con import()) porque import() está bloqueado en file://.
+      if (typeof window._createPyodideModule !== "function") await loadScript(PYODIDE_URL + "pyodide.asm.js");
       if (!window.loadPyodide) await loadScript(PYODIDE_URL + "pyodide.js");
       const py = await window.loadPyodide({ indexURL: PYODIDE_URL });
       py.runPython(window.PY_RUNNER);
@@ -353,6 +382,7 @@ builtins.input = _entrada
       setPyStatus("ready", "Python listo");
       return py;
     })().catch((err) => {
+      console.error("Error al cargar Python:", err);
       pyPromise = null;
       setPyStatus("error", "Sin Python (toca para reintentar)");
       throw err;
@@ -372,7 +402,7 @@ builtins.input = _entrada
   // Ejecuta y pinta la salida. Devuelve el resultado.
   async function execute(editor, outEl, resEl, test, buttons) {
     buttons.forEach((b) => { b.disabled = true; });
-    outEl.innerHTML = `<span class="muted">${pyPromise ? "Ejecutando…" : "Cargando Python (solo la primera vez, unos segundos)…"}</span>`;
+    outEl.innerHTML = `<span class="muted">${pyPromise ? "Ejecutando…" : "Cargando Python (unos segundos)…"}</span>`;
     resEl.className = "result";
     resEl.innerHTML = "";
     await new Promise((r) => setTimeout(r, 30));
@@ -382,7 +412,7 @@ builtins.input = _entrada
     } catch (err) {
       outEl.innerHTML = "";
       resEl.className = "result bad";
-      resEl.innerHTML = `<b>No se pudo cargar Python</b>Comprueba tu conexión a internet y vuelve a intentarlo. La primera carga descarga unos 12 MB; después queda guardado.`;
+      resEl.innerHTML = `<b>No se pudo cargar Python</b>Recarga la página e inténtalo de nuevo. Si el problema sigue, prueba con otro navegador (Chrome, Edge, Firefox o Safari actualizados).`;
       buttons.forEach((b) => { b.disabled = false; });
       return null;
     }
